@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "target": "es5"
+    },
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-config-prettier"
+    ],
+    "jsRules": {},
+    "rules": {
+        "prettier": true,
+        "interface-name": [
+            false
+        ],
+        "no-console": [
+            false
+        ],
+        "variable-name": {
+            "options": [
+                "allow-snake-case"
+            ]
+        },
+        "max-classes-per-file": [
+            true,
+            5,
+            "exclude-class-expressions"
+        ]
+    },
+    "rulesDirectory": [
+        "tslint-plugin-prettier"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "src/**/*.d.ts"
+        ]
+    }
+}
