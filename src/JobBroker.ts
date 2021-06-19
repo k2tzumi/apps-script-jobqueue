@@ -126,7 +126,7 @@ class JobBroker {
     return null;
   }
 
-  public consumeJob(closure: JobFunction, handler: string | null = null): void {
+  public consumeJob(closure: JobFunction, handler?: string): void {
     const scriptLock = LockService.getScriptLock();
 
     if (scriptLock.tryLock(500)) {
@@ -311,7 +311,7 @@ function enqueueAsyncJob(
  */
 function consumeAsyncJob(
   closure: JobFunction,
-  handler: string | null = null
+  handler?: string
 ): void {
   new JobBroker().consumeJob(closure, handler);
 }
