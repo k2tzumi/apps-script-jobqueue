@@ -29,4 +29,8 @@ declare module "apps-script-jobqueue" {
     export type Trigger = GoogleAppsScript.Script.Trigger;
     export type JobFunction = (parameter: Record<string, any>) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
+
+    export var JobBroker: JobBroker;
+    export var JobParameter: JobParameter;
+    export var DelayedJobBroker: DelayedJobBroker;
 }
