@@ -44,11 +44,6 @@ module.exports = {
                     }
                 }
             },
-            // {
-            //     test: /\.[tj]s$/,
-            //     exclude: /node_modules/,
-            //     loader: "es3ify",
-            // },
             {
                 enforce: "pre",
                 test: /\.[tj]s$/,
