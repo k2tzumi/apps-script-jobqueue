@@ -1,7 +1,7 @@
 {
   "name": "apps-script-jobqueue",
   "version": "0.0.1",
-  "description": "",
+  "description": "A simple job queue library for Google Apps Script.",
   "private": true,
   "main": "src/index.ts",
   "scripts": {
@@ -31,7 +31,6 @@
     "@typescript-eslint/parser": "^4.22.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "es3ify-loader": "^0.2.0",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "eslint-loader": "^4.0.2",
