@@ -1,4 +1,4 @@
-declare namespace JobBroker {
+declare module "apps-script-jobqueue" {
     export function enqueueAsyncJob(callback: JobFunction, parameter: Record<string, any>): void;
     export function consumeAsyncJob(closure: JobFunction, handler: string | null): void;
     export function createDelaydJob(scheduled_at: Date): DelayedJobBroker;
@@ -12,7 +12,7 @@ declare namespace JobBroker {
     }
 
     export interface DelayedJobBroker extends JobBroker {
-        performLater(callback: JobFunction,parameter: Record<string, any>): void
+        performLater(callback: JobFunction, parameter: Record<string, any>): void
     }
 
     export interface JobParameter {
@@ -30,11 +30,3 @@ declare namespace JobBroker {
     export type JobFunction = (parameter: Record<string, any>) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 }
-
-declare module "apps-script-jobqueue" {
-    export = JobBroker;
-}
-
-declare var DelayedJobBroker: JobBroker.DelayedJobBroker;
-declare var JobParameter: JobBroker.JobParameter;
-declare var JobFunction: JobBroker.JobFunction;
