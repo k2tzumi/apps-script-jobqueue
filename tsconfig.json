@@ -13,7 +13,7 @@
         "allowJs": false,
         "declaration": false,
         "downlevelIteration": true,
-        "strict": true,
+        "strict": false,
         "noUnusedLocals": true,
         "esModuleInterop": true,
         "noImplicitReturns": true,
