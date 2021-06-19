@@ -307,12 +307,9 @@ function enqueueAsyncJob(
 /**
  * Consume asynchronous processing.
  * @param {JobFunction} closure The main processing function of the callback
- * @param {?string} [handler=null] Function name of the callback function
+ * @param {?string} [handler] Function name of the callback function
  */
-function consumeAsyncJob(
-  closure: JobFunction,
-  handler?: string
-): void {
+function consumeAsyncJob(closure: JobFunction, handler?: string): void {
   new JobBroker().consumeJob(closure, handler);
 }
 
