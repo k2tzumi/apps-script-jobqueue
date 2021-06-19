@@ -26,7 +26,6 @@
     "@babel/preset-env": "^7.14.0",
     "@babel/preset-typescript": "^7.13.0",
     "@google/clasp": "^2.3.2",
-    "@types/google-apps-script": "^1.0.31",
     "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
@@ -46,5 +45,8 @@
     "tslint-plugin-prettier": "^2.3.0",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.34"
   }
 }
