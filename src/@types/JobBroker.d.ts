@@ -1,4 +1,4 @@
-declare module "apps-script-jobqueue" {
+declare namespace JobBroker {
     export function enqueueAsyncJob(callback: JobFunction, parameter: Record<string, any>): void;
     export function consumeAsyncJob(closure: JobFunction, handler: string | null): void;
     export function createDelaydJob(scheduled_at: Date): DelayedJobBroker;
@@ -30,3 +30,11 @@ declare module "apps-script-jobqueue" {
     export type JobFunction = (parameter: Record<string, any>) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 }
+
+declare module "apps-script-jobqueue" {
+    export = JobBroker;
+}
+
+declare var DelayedJobBroker: JobBroker.DelayedJobBroker;
+declare var JobParameter: JobBroker.JobParameter;
+declare var JobFunction: JobBroker.JobFunction;
