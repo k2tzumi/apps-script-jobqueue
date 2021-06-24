@@ -12,6 +12,9 @@ module.exports = {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
         globalObject: 'this',
+        environment: {
+            arrowFunction: false
+        }
     },
     resolve: {
         extensions: [".ts", ".js"],
@@ -40,7 +43,7 @@ module.exports = {
                                 }
                             ],
                             "@babel/preset-typescript"
-                        ],
+                        ]
                     }
                 }
             },
