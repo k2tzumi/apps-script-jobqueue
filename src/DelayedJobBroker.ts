@@ -44,21 +44,4 @@ class DelayedJobBroker extends JobBroker {
   }
 }
 
-/**
- * Create a delayed job
- * @param {Date} scheduled_at Scheduled time
- * @returns {DelayedJobBroker} - delayed job
- */
-function createDelaydJob(scheduled_at: Date): DelayedJobBroker {
-  return DelayedJobBroker.createJob(scheduled_at);
-}
-
-/**
- * Perform a scheduled job.
- * @param {JobFunction} closure The main processing function of the callback
- */
-function perform(closure: JobFunction): void {
-  DelayedJobBroker.perform(closure);
-}
-
-export { DelayedJobBroker, createDelaydJob, perform };
+export { DelayedJobBroker };

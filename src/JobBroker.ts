@@ -292,32 +292,4 @@ class JobBroker {
   }
 }
 
-/**
- * Register for asynchronous processing.
- * @param {JobFunction} callback call back funtion
- * @param {Record<string, any>} parameter Specify parameters to be passed to the callback function
- */
-function enqueueAsyncJob(
-  callback: JobFunction,
-  parameter: Record<string, any>
-): void {
-  new JobBroker().enqueue(callback, parameter);
-}
-
-/**
- * Consume asynchronous processing.
- * @param {JobFunction} closure The main processing function of the callback
- * @param {?string} [handler] Function name of the callback function
- */
-function consumeAsyncJob(closure: JobFunction, handler?: string): void {
-  new JobBroker().consumeJob(closure, handler);
-}
-
-export {
-  JobBroker,
-  JobFunction,
-  JobParameter,
-  Job,
-  enqueueAsyncJob,
-  consumeAsyncJob,
-};
+export { JobBroker, JobFunction, JobParameter, Job };

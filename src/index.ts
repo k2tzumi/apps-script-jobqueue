@@ -1,5 +1,5 @@
-import { enqueueAsyncJob, consumeAsyncJob } from "./JobBroker";
-import { createDelaydJob, perform } from "./DelayedJobBroker";
+import { JobBroker, JobFunction } from "./JobBroker";
+import { DelayedJobBroker } from "./DelayedJobBroker";
 
 declare const global: {
   [x: string]: unknown;
@@ -10,24 +10,35 @@ declare const global: {
  * @param {JobFunction} callback call back funtion
  * @param {Record<string, any>} parameter Specify parameters to be passed to the callback function
  */
-global.enqueueAsyncJob = enqueueAsyncJob;
+global.enqueueAsyncJob = (
+  callback: JobFunction,
+  parameter: Record<string, any>
+): void => {
+  new JobBroker().enqueue(callback, parameter);
+};
 
 /**
  * Consume asynchronous processing.
  * @param {JobFunction} closure The main processing function of the callback
- * @param {?string} [handler=null] Function name of the callback function
+ * @param {?string} [handler] Function name of the callback function
  */
-global.consumeAsyncJob = consumeAsyncJob;
+global.consumeAsyncJob = (closure: JobFunction, handler?: string): void => {
+  new JobBroker().consumeJob(closure, handler);
+};
 
 /**
  * Create a delayed job
  * @param {Date} scheduled_at Scheduled time
- * @returns {DelayedJobBroker} - delayed job
+ * @return {DelayedJobBroker} - delayed job
  */
-global.createDelaydJob = createDelaydJob;
+global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
+  return DelayedJobBroker.createJob(scheduled_at);
+};
 
 /**
  * Perform a scheduled job.
  * @param {JobFunction} closure The main processing function of the callback
  */
-global.perform = perform;
+global.perform = (closure: JobFunction): void => {
+  DelayedJobBroker.perform(closure);
+};
