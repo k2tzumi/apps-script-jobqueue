@@ -23,7 +23,22 @@ global.enqueueAsyncJob = (
  * @param {?string} [handler] Function name of the callback function
  */
 global.consumeAsyncJob = (closure: JobFunction, handler?: string): void => {
-  new JobBroker().consumeJob(closure, handler);
+  let callerName = handler;
+  if (!handler) {
+    try {
+      throw new Error();
+    } catch (e) {
+      const re = /(\w+)@|at (\w+) \(/g,
+        st = e.stack;
+      let m;
+      callerName = "NONE";
+      while ((m = re.exec(st))) {
+        callerName = m != null ? m[1] || m[2] : "NONE";
+      }
+    }
+  }
+
+  new JobBroker().consumeJob(closure, callerName);
 };
 
 /**
@@ -38,7 +53,22 @@ global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
 /**
  * Perform a scheduled job.
  * @param {JobFunction} closure The main processing function of the callback
+ * @param {?string} [handler] Function name of the callback function
  */
-global.perform = (closure: JobFunction): void => {
-  DelayedJobBroker.perform(closure);
+global.perform = (closure: JobFunction, handler?: string): void => {
+  let callerName = handler;
+  if (!handler) {
+    try {
+      throw new Error();
+    } catch (e) {
+      const re = /(\w+)@|at (\w+) \(/g,
+        st = e.stack;
+      let m;
+      callerName = "NONE";
+      while ((m = re.exec(st))) {
+        callerName = m != null ? m[1] || m[2] : "NONE";
+      }
+    }
+  }
+  DelayedJobBroker.perform(closure, callerName);
 };

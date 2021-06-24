@@ -16,8 +16,11 @@ class DelayedJobBroker extends JobBroker {
     this.enqueue(callback, parameter);
   }
 
-  static perform(closure: JobFunction): void {
-    new this(new Date()).consumeJob(closure, this.perform.caller.name);
+  static perform(closure: JobFunction, handler?: string): void {
+    new this(new Date()).consumeJob(
+      closure,
+      handler ? handler : this.perform.caller.name
+    );
   }
 
   protected createJob(
