@@ -33,7 +33,7 @@ push: .clasp.json dist/index.js
 .PHONY: deploy
 deploy: ## Deploy Google apps scripts
 deploy: .clasp.json
-	clasp deploy
+	clasp deploy -d "`git log -1 --oneline | cut -b 9-`"
 
 .PHONY: open
 open: ## Open Google apps scripts
