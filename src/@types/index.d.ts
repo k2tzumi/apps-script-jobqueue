@@ -1,3 +1,5 @@
+/// <reference types="google-apps-script" />
+
 declare module "apps-script-jobqueue" {
     export function enqueueAsyncJob(callback: JobFunction, parameter: Record<string, any>): void;
     export function consumeAsyncJob(closure: JobFunction, handler: string): void;
