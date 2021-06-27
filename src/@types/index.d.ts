@@ -1,8 +1,8 @@
 declare module "apps-script-jobqueue" {
     export function enqueueAsyncJob(callback: JobFunction, parameter: Record<string, any>): void;
-    export function consumeAsyncJob(closure: JobFunction, handler?: string): void;
+    export function consumeAsyncJob(closure: JobFunction, handler: string): void;
     export function createDelaydJob(scheduled_at: Date): DelayedJobBroker;
-    export function perform(closure: JobFunction, handler?: string): void;
+    export function perform(closure: JobFunction, handler: string): void;
 
     export interface JobBroker {
         enqueue(callback: JobFunction, parameter: Record<string, any>): void;

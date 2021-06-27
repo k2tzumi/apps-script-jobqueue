@@ -130,9 +130,9 @@ class JobBroker {
     const scriptLock = LockService.getScriptLock();
 
     if (scriptLock.tryLock(500)) {
-      const popJob = this.dequeue(
-        handler ? handler : this.consumeJob.caller.name
-      );
+      handler = handler ? handler : this.consumeJob.caller.name;
+
+      const popJob = this.dequeue(handler);
 
       if (popJob) {
         const { parameter } = popJob;
@@ -168,7 +168,7 @@ class JobBroker {
       }
       scriptLock.releaseLock();
 
-      console.info(`Nothing active job.`);
+      console.info(`Nothing active job. handler: ${handler}`);
     }
   }
 
