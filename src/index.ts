@@ -40,6 +40,6 @@ global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
  * @param {JobFunction} closure The main processing function of the callback
  * @param {string} handler Function name of the callback function
  */
-global.perform = function (closure: JobFunction, handler: string): void {
+global.perform = (closure: JobFunction, handler: string): void => {
   DelayedJobBroker.perform(closure, handler);
 };
