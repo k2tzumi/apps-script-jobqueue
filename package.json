@@ -4,7 +4,7 @@
   "description": "A simple job queue library for Google Apps Script.",
   "private": true,
   "main": "src/index.ts",
-  "typings": "src/@types/index.d.ts",
+  "typings": "src/index.d.ts",
   "scripts": {
     "build": "webpack",
     "deploy": "npm run build && clasp push -f",
