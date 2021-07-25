@@ -29,7 +29,7 @@ const asyncFunction = (): void = {
     // Details will be described below.
 };
 
-let parameter = { foo: "bar" };
+const parameter = { foo: "bar" };
 JobBroker.enqueueAsyncJob(asyncFunction, parameter);
 ```
 
@@ -61,7 +61,7 @@ const delayFunction = (): void = {
   }, "delayFunction");
 };
 
-let parameter = { foo: "bar" };
+const parameter = { foo: "bar" };
 const startTIme = new Date();
 // 3 minutes later
 startTime.setMinutes(startTIme.getMinutes() + 3);
