@@ -2,6 +2,7 @@
 const path = require("path");
 const webpack = require('webpack');
 const GasPlugin = require("gas-webpack-plugin");
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
     mode: "development",
@@ -47,15 +48,13 @@ module.exports = {
                     }
                 }
             },
-            {
-                enforce: "pre",
-                test: /\.[tj]s$/,
-                exclude: /node_modules/,
-                loader: "eslint-loader",
-            }
         ],
     },
     plugins: [
-        new GasPlugin({ autoGlobalExportsFiles: ['*.ts'] })
+        new GasPlugin({ autoGlobalExportsFiles: ['*.ts'] }),
+        new ESLintPlugin({
+            extensions: ['.ts', '.js'],
+            exclude: 'node_modules'
+        }),
     ],
 };
