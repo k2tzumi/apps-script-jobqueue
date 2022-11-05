@@ -1,8 +1,5 @@
 module.exports = {
     globals: {
-        'ts-jest': {
-            diagnostics: false,
-        },
         UrlFetchApp: {},
         console: {},
         PropertiesService: {},
@@ -26,6 +23,6 @@ module.exports = {
     testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
     testEnvironment: 'node',
     transform: {
-        '^.+\\.tsx?$': 'ts-jest',
+        '^.+\\.tsx?$': ['ts-jest', { diagnostics: false }],
     },
 };
