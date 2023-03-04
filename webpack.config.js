@@ -12,7 +12,8 @@ module.exports = {
     output: {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
-        globalObject: 'this',
+        library: "A simple job-queue for Apps Script",
+        libraryTarget: "this",
         environment: {
             arrowFunction: true
         }
@@ -51,7 +52,7 @@ module.exports = {
         ],
     },
     plugins: [
-        new GasPlugin({ autoGlobalExportsFiles: ['*.ts'] }),
+        new GasPlugin(),
         new ESLintPlugin({
             extensions: ['.ts', '.js'],
             exclude: 'node_modules'
