@@ -5,6 +5,7 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .clasp.json:
+	make login
 	clasp create --title JobBroker --type standalone --rootDir ./dist
 	clasp setting fileExtension js
 	rm -f .clasp.json-e
@@ -17,7 +18,7 @@ node_modules:
 
 .PHONY: login
 login: ## Google login
-login: .clasp.json
+login:
 	clasp login
 
 .PHONY: build
@@ -58,7 +59,7 @@ test: node_modules
 .PHONY: clean
 clean: ## clean webpack bundle
 clean:
-	rm -f dist/index.js
+	rm -f dist/index.js*
 
 .PHONY: undeploy
 undeploy: ## all undeploy Google apps scripts
