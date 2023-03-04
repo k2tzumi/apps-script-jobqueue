@@ -1,4 +1,4 @@
-import { JobBroker, JobFunction } from "./JobBroker";
+import { JobBroker, JobFunction, JSONSerializable } from "./JobBroker";
 import { DelayedJobBroker } from "./DelayedJobBroker";
 
 declare const global: {
@@ -8,11 +8,11 @@ declare const global: {
 /**
  * Register for asynchronous processing.
  * @param {JobFunction} callback call back funtion
- * @param {Record<string, any>} parameter Specify parameters to be passed to the callback function
+ * @param {JSONSerializable} parameter Specify parameters to be passed to the callback function
  */
 global.enqueueAsyncJob = (
   callback: JobFunction,
-  parameter: Record<string, any>
+  parameter: JSONSerializable
 ): void => {
   new JobBroker().enqueue(callback, parameter);
 };

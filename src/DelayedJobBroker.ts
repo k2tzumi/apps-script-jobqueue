@@ -1,4 +1,10 @@
-import { JobBroker, JobFunction, Job, JobParameter } from "./JobBroker";
+import {
+  JobBroker,
+  JobFunction,
+  Job,
+  JobParameter,
+  JSONSerializable,
+} from "./JobBroker";
 
 class DelayedJobBroker extends JobBroker {
   private constructor(private scheduled_at: Date) {
@@ -11,7 +17,7 @@ class DelayedJobBroker extends JobBroker {
 
   public performLater(
     callback: JobFunction,
-    parameter: Record<string, any>
+    parameter: JSONSerializable
   ): void {
     this.enqueue(callback, parameter);
   }
@@ -23,10 +29,7 @@ class DelayedJobBroker extends JobBroker {
     );
   }
 
-  protected createJob(
-    callback: JobFunction,
-    parameter: Record<string, any>
-  ): Job {
+  protected createJob(callback: JobFunction, parameter: JSONSerializable): Job {
     const trigger = ScriptApp.newTrigger(callback.name)
       .timeBased()
       .at(this.scheduled_at)
