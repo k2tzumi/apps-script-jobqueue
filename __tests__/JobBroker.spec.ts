@@ -83,8 +83,7 @@ describe('JobBroker', () => {
             const param : paramType = { foo: "bar" };
             const callBack = (): void => {
                 const jobBroker = new JobBroker();
-                const callBack: JobFunction = (parameter: Parameter):void => {
-                    const param = parameter as paramType;
+                const callBack: JobFunction<paramType> = (parameter):void => {
                     console.log(param.foo);
                 };
                 jobBroker.consumeJob(callBack, "callBack");

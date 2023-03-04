@@ -2,24 +2,24 @@
 
 declare namespace AppsScriptJobqueue {
     interface JobBroker {
-        enqueueAsyncJob(callback: JobFunction, parameter: Parameter): void;
-        consumeAsyncJob(closure: JobFunction, handler: string): void;
+        enqueueAsyncJob(callback: JobFunction<any>, parameter: Parameter): void;
+        consumeAsyncJob(closure: JobFunction<any>, handler: string): void;
         createDelaydJob(scheduled_at: Date): DelayedJobBroker;
-        perform(closure: JobFunction, handler: string): void;
+        perform(closure: JobFunction<any>, handler: string): void;
     }
 
     interface _JobBroker {
-        enqueue(callback: JobFunction, parameter: Parameter): void;
+        enqueue(callback: JobFunction<any>, parameter: Parameter): void;
         dequeue(handler: string): Job | null;
-        consumeJob(closure: JobFunction, handler?: string): void;
+        consumeJob(closure: JobFunction<any>, handler?: string): void;
     }
     interface DelayedJobBroker extends _JobBroker {
-        perform(closure: JobFunction, handler?: string): void;
-        performLater(callback: JobFunction, parameter: Parameter): void
+        perform(closure: JobFunction<any>, handler?: string): void;
+        performLater(callback: JobFunction<any>, parameter: Parameter): void
     }
     export type Trigger = GoogleAppsScript.Script.Trigger;
     export type Parameter = Record<string | number | symbol, object | string | number | boolean | null>|{}[]|object;
-    export type JobFunction = (parameter: Parameter) => void;
+    export type JobFunction<T extends Parameter> = (parameter: T) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 
     export var JobParameter: JobParameter;
