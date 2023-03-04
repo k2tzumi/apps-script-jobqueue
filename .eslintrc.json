@@ -1,10 +1,7 @@
 {
     "extends": [
-        "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:prettier/recommended",
-        "prettier"
+        "plugin:prettier/recommended"
     ],
     "plugins": [
         "@typescript-eslint"
@@ -17,5 +14,7 @@
     "parserOptions": {
         "sourceType": "module"
     },
-    "rules": {}
+    "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "error"
+    }
 }

@@ -5,23 +5,18 @@ const GasPlugin = require("gas-webpack-plugin");
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
-    mode: "development",
-    devtool: false,
+    mode: "none",
+    devtool: 'source-map',
     context: __dirname,
     entry: "./src/index.ts",
     output: {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
-        globalObject: 'this',
-        environment: {
-            arrowFunction: false
-        }
+        library: "JobBroker",
+        libraryTarget: "this"
     },
     resolve: {
         extensions: [".ts", ".js"],
-    },
-    node: {
-        __dirname: true,
     },
     stats: {
         errorDetails: true
@@ -29,29 +24,16 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.[tj]s$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            [
-                                "@babel/preset-env",
-                                {
-                                    "targets": {
-                                        "browsers": ["ie 8"]
-                                    }
-                                }
-                            ],
-                            "@babel/preset-typescript"
-                        ]
-                    }
+                    loader: 'ts-loader',
                 }
             },
         ],
     },
     plugins: [
-        new GasPlugin({ autoGlobalExportsFiles: ['*.ts'] }),
+        new GasPlugin(),
         new ESLintPlugin({
             extensions: ['.ts', '.js'],
             exclude: 'node_modules'
