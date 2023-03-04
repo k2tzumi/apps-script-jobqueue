@@ -11,7 +11,7 @@ declare const global: {
  * @param {Parameter} parameter Specify parameters to be passed to the callback function
  */
 global.enqueueAsyncJob = (
-  callback: JobFunction<any>,
+  callback: JobFunction<object>,
   parameter: Parameter
 ): void => {
   new JobBroker().enqueue(callback, parameter);
@@ -22,7 +22,10 @@ global.enqueueAsyncJob = (
  * @param {JobFunction} closure The main processing function of the callback
  * @param {string} handler Function name of the callback function
  */
-global.consumeAsyncJob = (closure: JobFunction<any>, handler: string): void => {
+global.consumeAsyncJob = (
+  closure: JobFunction<object>,
+  handler: string
+): void => {
   new JobBroker().consumeJob(closure, handler);
 };
 
@@ -40,6 +43,6 @@ global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
  * @param {JobFunction} closure The main processing function of the callback
  * @param {string} handler Function name of the callback function
  */
-global.perform = (closure: JobFunction<any>, handler: string): void => {
+global.perform = (closure: JobFunction<object>, handler: string): void => {
   DelayedJobBroker.perform(closure, handler);
 };

@@ -6,10 +6,10 @@ type Trigger = GoogleAppsScript.Script.Trigger;
 
 type Parameter =
   | Record<string | number | symbol, object | string | number | boolean | null>
-  | {}[]
+  | object[]
   | object;
 
-type JobFunction<T extends Parameter> = (parameter: T) => void;
+type JobFunction<T> = (parameter: T) => void;
 
 interface JobParameter {
   id: string;
@@ -34,7 +34,7 @@ const JOB_EXECUTE_TIME_OUT = 3600;
  */
 const JOB_STARTING_TIME_OUT = 900;
 
-class JobBroker {
+class JobBroker<T extends Parameter> {
   private queue: Cache;
   private triggers: Trigger[];
 
@@ -43,7 +43,7 @@ class JobBroker {
     this.triggers = ScriptApp.getProjectTriggers();
   }
 
-  public enqueue(callback: JobFunction<any>, parameter: Parameter): void {
+  public enqueue(callback: JobFunction<T>, parameter: Parameter): void {
     if (callback.name === "anonymous") {
       throw new Error("Unsupport anonymous callback function.");
     }
@@ -132,7 +132,7 @@ class JobBroker {
     return null;
   }
 
-  public consumeJob(closure: JobFunction<any>, handler?: string): void {
+  public consumeJob(closure: JobFunction<T>, handler?: string): void {
     const scriptLock = LockService.getScriptLock();
 
     if (scriptLock.tryLock(500)) {
@@ -184,7 +184,7 @@ class JobBroker {
     }#${trigger.getHandlerFunction()}#${trigger.getUniqueId()}`;
   }
 
-  protected createJob(callback: JobFunction<any>, parameter: Parameter): Job {
+  protected createJob(callback: JobFunction<T>, parameter: Parameter): Job {
     const trigger = ScriptApp.newTrigger(callback.name)
       .timeBased()
       .after(DELAY_DURATION)

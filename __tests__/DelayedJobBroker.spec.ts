@@ -1,4 +1,5 @@
 import { DelayedJobBroker } from "../src/DelayedJobBroker";
+import { Parameter } from "../src/JobBroker";
 
 const scriptCache = {
     get: jest.fn(function () {
@@ -51,12 +52,12 @@ LockService['getScriptLock'] = jest.fn(() => lock);
 describe('DelayedJobBroker', () => {
     describe('createJob', () => {
         it('success', () => {
-            const broker = DelayedJobBroker.createJob(new Date());
+            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
         });
     });
     describe('performLater', () => {
         it('success', () => {
-            const broker = DelayedJobBroker.createJob(new Date());
+            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
 
             interface HOGE {
                 foo: string;
@@ -77,7 +78,7 @@ describe('DelayedJobBroker', () => {
     });
     describe('perform', () => {
         it('success', () => {
-            const broker = DelayedJobBroker.createJob(new Date());
+            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
 
             const callBack = (): void => {};
 
