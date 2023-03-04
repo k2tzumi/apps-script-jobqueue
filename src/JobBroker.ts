@@ -6,7 +6,8 @@ type Trigger = GoogleAppsScript.Script.Trigger;
 
 type Parameter =
   | Record<string | number | symbol, object | string | number | boolean | null>
-  | {}[];
+  | {}[]
+  | object;
 
 type JobFunction = (parameter: Parameter) => void;
 
