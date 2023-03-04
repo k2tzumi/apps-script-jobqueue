@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.5](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.4...v0.0.5) - 2023-03-04
+### Other Changes
+- Fix `Cannot set properties of undefined (setting 'JobBroker')` by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/10
+- Revise the type by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/12
+
 ## [v0.0.4](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.3...v0.0.4) - 2023-03-04
 ### Other Changes
 - Fix by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/8
