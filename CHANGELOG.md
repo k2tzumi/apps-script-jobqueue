@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.0.4](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.3...v0.0.4) - 2023-03-04
+### Other Changes
+- Fix by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/8
+
 ## [v0.0.3](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.2...v0.0.3) - 2023-03-04
 ### Other Changes
 - Fix lint by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/6
