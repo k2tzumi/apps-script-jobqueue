@@ -1,13 +1,15 @@
 .DEFAULT_GOAL := help
 
+CLASP = npx @google/clasp
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' Makefile | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .clasp.json:
 	make login
-	clasp create --title JobBroker --type standalone --rootDir ./dist
-	clasp setting fileExtension js
+	$(CLASP) create --title JobBroker --type standalone --rootDir ./dist
+	$(CLASP) setting fileExtension js
 	rm -f .clasp.json-e
 
 dist/index.js:
@@ -19,7 +21,7 @@ node_modules:
 .PHONY: login
 login: ## Google login
 login:
-	clasp login
+	$(CLASP) login
 
 .PHONY: build
 build: ## Build Google apps scripts
@@ -29,22 +31,22 @@ build: node_modules lint
 .PHONY: push
 push: ## Push Google apps scripts
 push: .clasp.json dist/index.js
-	clasp push -f
+	$(CLASP) push -f
 
 .PHONY: deploy
 deploy: ## Deploy Google apps scripts
 deploy: .clasp.json
-	clasp deploy -d "`git log -1 --oneline | cut -b 9-`"
+	$(CLASP) deploy -d "`git log -1 --oneline | cut -b 9-`"
 
 .PHONY: open
 open: ## Open Google apps scripts
 open: .clasp.json
-	clasp open
+	$(CLASP) open
 
 .PHONY: pull
 pull: ## Pull Google apps scripts
 pull: .clasp.json
-	clasp pull
+	$(CLASP) pull
 
 .PHONY: lint
 lint: ## Run tslint
@@ -64,4 +66,4 @@ clean:
 .PHONY: undeploy
 undeploy: ## all undeploy Google apps scripts
 undeploy:
-	clasp undeploy --all
+	$(CLASP) undeploy --all
