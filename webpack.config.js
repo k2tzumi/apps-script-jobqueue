@@ -13,8 +13,6 @@ module.exports = {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
         library: "JobBroker",
-        libraryTarget: "this",
-        globalObject: 'this',
         environment: {
             arrowFunction: false
         }
