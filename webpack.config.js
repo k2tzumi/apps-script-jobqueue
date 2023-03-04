@@ -13,7 +13,11 @@ module.exports = {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
         library: "JobBroker",
-        libraryTarget: "this"
+        libraryTarget: "this",
+        globalObject: 'this',
+        environment: {
+            arrowFunction: false
+        }
     },
     resolve: {
         extensions: [".ts", ".js"],
@@ -24,10 +28,23 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.[tj]s$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'ts-loader',
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            [
+                                "@babel/preset-env",
+                                {
+                                    "targets": {
+                                        "browsers": ["ie 8"]
+                                    }
+                                }
+                            ],
+                            "@babel/preset-typescript"
+                        ]
+                    }
                 }
             },
         ],
