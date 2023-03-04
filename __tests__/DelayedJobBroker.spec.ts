@@ -1,4 +1,4 @@
-import { JobBroker, Parameter } from "../src/JobBroker";
+import { DelayedJobBroker } from "../src/DelayedJobBroker";
 
 const scriptCache = {
     get: jest.fn(function () {
@@ -24,7 +24,8 @@ const triggerBuilder = {
     create: jest.fn(() => trigger)
 }
 const clockTriggerBuilder = {
-    after: jest.fn(() => triggerBuilder)
+    after: jest.fn(() => triggerBuilder),
+    at: jest.fn(() => triggerBuilder)
 }
 const lock = {
     hasLock: jest.fn(),
@@ -47,47 +48,40 @@ ScriptApp['deleteTrigger'] = jest.fn();
 ScriptApp['TriggerSource'] = jest.fn(() => triggerSource);
 LockService['getScriptLock'] = jest.fn(() => lock);
 
-describe('JobBroker', () => {
-    describe('enqueue', () => {
+describe('DelayedJobBroker', () => {
+    describe('createJob', () => {
         it('success', () => {
-            const jobBroker = new JobBroker();
+            const broker = DelayedJobBroker.createJob(new Date());
+        });
+    });
+    describe('performLater', () => {
+        it('success', () => {
+            const broker = DelayedJobBroker.createJob(new Date());
+
             interface HOGE {
                 foo: string;
             }
 
             const hoge: HOGE = { foo: "sss" };
 
-            jobBroker.enqueue(jest.fn(), {});
-            jobBroker.enqueue(jest.fn(), { foo: "1" });
-            jobBroker.enqueue(jest.fn(), { "bar": 1 });
-            jobBroker.enqueue(jest.fn(), { baz: true });
-            jobBroker.enqueue(jest.fn(), { 1: null });
-            jobBroker.enqueue(jest.fn(), { empty: {} });
-            jobBroker.enqueue(jest.fn(), { nest: { foo: 1 } });
-            jobBroker.enqueue(jest.fn(), [{ nest: { foo: 1 } }]);
-            jobBroker.enqueue(jest.fn(), hoge as {});
+            broker.performLater(jest.fn(), {});
+            broker.performLater(jest.fn(), { foo: "1" });
+            broker.performLater(jest.fn(), { "bar": 1 });
+            broker.performLater(jest.fn(), { baz: true });
+            broker.performLater(jest.fn(), { 1: null });
+            broker.performLater(jest.fn(), { empty: {} });
+            broker.performLater(jest.fn(), { nest: { foo: 1 } });
+            broker.performLater(jest.fn(), [{ nest: { foo: 1 } }]);
+            broker.performLater(jest.fn(), hoge as {});
         });
     });
-    describe('dequeue', () => {
+    describe('perform', () => {
         it('success', () => {
-            const jobBroker = new JobBroker();
+            const broker = DelayedJobBroker.createJob(new Date());
 
-            jobBroker.enqueue(jest.fn(), {});
-            jobBroker.dequeue('dummy');
-        });
-    });
-    describe('consumeJob', () => {
-        it('success', () => {
-            const jobBroker = new JobBroker();
-            const callBack = (): void => {
-                const jobBroker = new JobBroker();
-                jobBroker.consumeJob((parameter: Parameter) => {
-                    const cast = parameter as { foo: string; };
-                    console.info(JSON.stringify(cast.foo));
-                }, "callBack");
-            };
+            const callBack = (): void => {};
 
-            jobBroker.enqueue(callBack, { foo: "bar" });
+            DelayedJobBroker.perform(callBack, "callBack");
         });
     });
 });
