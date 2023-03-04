@@ -1,6 +1,6 @@
 {
   "name": "apps-script-jobqueue",
-  "version": "0.0.1",
+  "version": "v0.0.1",
   "description": "A simple job queue library for Google Apps Script.",
   "private": true,
   "main": "src/index.ts",
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/k2tzumi/apps-script-jobqueue.git"
   },
   "author": "k2tzumi",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/k2tzumi/apps-script-jobqueue/issues"
   },
