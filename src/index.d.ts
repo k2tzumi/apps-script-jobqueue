@@ -1,29 +1,29 @@
 /// <reference types="google-apps-script" />
 
 declare namespace AppsScriptJobqueue {
-    interface JobBroker {
-        enqueueAsyncJob(callback: JobFunction<any>, parameter: Parameter): void;
-        consumeAsyncJob(closure: JobFunction<any>, handler: string): void;
-        createDelaydJob(scheduled_at: Date): DelayedJobBroker;
-        perform(closure: JobFunction<any>, handler: string): void;
+    interface JobBroker<T extends Parameter> {
+        enqueueAsyncJob(callback: JobFunction<T>, parameter: Parameter): void;
+        consumeAsyncJob(closure: JobFunction<T>, handler: string): void;
+        createDelaydJob(scheduled_at: Date): DelayedJobBroker<T>;
+        perform(closure: JobFunction<T>, handler: string): void;
     }
 
-    interface _JobBroker {
-        enqueue(callback: JobFunction<any>, parameter: Parameter): void;
+    interface _JobBroker<T extends Parameter> {
+        enqueue(callback: JobFunction<T>, parameter: Parameter): void;
         dequeue(handler: string): Job | null;
-        consumeJob(closure: JobFunction<any>, handler?: string): void;
+        consumeJob(closure: JobFunction<T>, handler?: string): void;
     }
-    interface DelayedJobBroker extends _JobBroker {
-        perform(closure: JobFunction<any>, handler?: string): void;
-        performLater(callback: JobFunction<any>, parameter: Parameter): void
+    interface DelayedJobBroker<T extends Parameter> extends _JobBroker<T> {
+        perform(closure: JobFunction<T>, handler?: string): void;
+        performLater(callback: JobFunction<T>, parameter: Parameter): void
     }
     export type Trigger = GoogleAppsScript.Script.Trigger;
     export type Parameter = Record<string | number | symbol, object | string | number | boolean | null>|object[]|object;
-    export type JobFunction<T extends Parameter> = (parameter: T) => void;
+    export type JobFunction<T> = (parameter: T) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 
     export var JobParameter: JobParameter;
-    export var DelayedJobBroker: DelayedJobBroker;
+    export var DelayedJobBroker: DelayedJobBroker<Parameter>;
 
 
     export interface JobParameter {
@@ -39,4 +39,4 @@ declare namespace AppsScriptJobqueue {
 }
 
 
-declare var JobBroker: AppsScriptJobqueue.JobBroker;
+declare var JobBroker: AppsScriptJobqueue.JobBroker<AppsScriptJobqueue.Parameter>;
