@@ -72,7 +72,7 @@ describe('DelayedJobBroker', () => {
             broker.performLater(jest.fn(), { empty: {} });
             broker.performLater(jest.fn(), { nest: { foo: 1 } });
             broker.performLater(jest.fn(), [{ nest: { foo: 1 } }]);
-            broker.performLater(jest.fn(), hoge as {});
+            broker.performLater(jest.fn(), hoge);
         });
     });
     describe('perform', () => {
