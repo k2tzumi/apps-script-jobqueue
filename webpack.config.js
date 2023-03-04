@@ -6,7 +6,7 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
     mode: "production",
-    devtool: false,
+    devtool: 'source-map',
     context: __dirname,
     entry: "./src/index.ts",
     output: {
