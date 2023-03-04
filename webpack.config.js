@@ -14,7 +14,7 @@ module.exports = {
         filename: "index.js",
         globalObject: 'this',
         environment: {
-            arrowFunction: false
+            arrowFunction: true
         }
     },
     resolve: {
