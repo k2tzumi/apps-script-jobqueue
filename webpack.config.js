@@ -12,7 +12,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
-        library: "A simple job-queue for Apps Script",
+        library: "JobBroker",
         libraryTarget: "this",
         environment: {
             arrowFunction: true
