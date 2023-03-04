@@ -21,9 +21,6 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js"],
     },
-    node: {
-        __dirname: true,
-    },
     stats: {
         errorDetails: true
     },
