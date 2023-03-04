@@ -1,4 +1,4 @@
-import { JobBroker } from "../src/JobBroker";
+import { JobBroker, Parameter } from "../src/JobBroker";
 
 const scriptCache = {
     get: jest.fn(function () {
@@ -51,8 +51,21 @@ describe('JobBroker', () => {
     describe('enqueue', () => {
         it('success', () => {
             const jobBroker = new JobBroker();
+            interface HOGE {
+                foo: string;
+            }
+
+            const hoge: HOGE = { foo: "sss" };
 
             jobBroker.enqueue(jest.fn(), {});
+            jobBroker.enqueue(jest.fn(), { foo: "1" });
+            jobBroker.enqueue(jest.fn(), { "bar": 1 });
+            jobBroker.enqueue(jest.fn(), { baz: true });
+            jobBroker.enqueue(jest.fn(), { 1: null });
+            jobBroker.enqueue(jest.fn(), { empty: {} });
+            jobBroker.enqueue(jest.fn(), { nest: { foo: 1 } });
+            jobBroker.enqueue(jest.fn(), [{ nest: { foo: 1 } }]);
+            jobBroker.enqueue(jest.fn(), hoge as {});
         });
     });
     describe('dequeue', () => {
@@ -66,13 +79,16 @@ describe('JobBroker', () => {
     describe('consumeJob', () => {
         it('success', () => {
             const jobBroker = new JobBroker();
+            const callBack = (): void => {
+                const jobBroker = new JobBroker();
+                jobBroker.consumeJob((parameter: Parameter) => {
+                    const cast = parameter as { foo: string; };
+                    console.info(JSON.stringify(cast.foo));
+                }, "callBack");
+            };
 
-            jobBroker.enqueue(jest.fn(), {});
-            callConsumeJob(jobBroker);
+            jobBroker.enqueue(callBack, { foo: "bar" });
         });
     });
 });
 
-function callConsumeJob(jobBroker: JobBroker) {
-    jobBroker.consumeJob(jest.fn());
-}

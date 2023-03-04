@@ -4,17 +4,11 @@
 type Cache = GoogleAppsScript.Cache.Cache;
 type Trigger = GoogleAppsScript.Script.Trigger;
 
-type EmptyObject = { [K in string | number]: never };
-type JSONSerializablePrimitive = null | boolean | string | number;
-type JSONSerializableObject = Partial<{ [key: string]: JSONSerializable }>;
-type JSONSerializableArray = JSONSerializable[];
-type JSONSerializable =
-  | JSONSerializablePrimitive
-  | JSONSerializableArray
-  | JSONSerializableObject
-  | EmptyObject;
+type Parameter =
+  | Record<string | number | symbol, object | string | number | boolean | null>
+  | {}[];
 
-type JobFunction = (parameter: JSONSerializable) => void;
+type JobFunction = (parameter: Parameter) => void;
 
 interface JobParameter {
   id: string;
@@ -48,7 +42,7 @@ class JobBroker {
     this.triggers = ScriptApp.getProjectTriggers();
   }
 
-  public enqueue(callback: JobFunction, parameter: JSONSerializable): void {
+  public enqueue(callback: JobFunction, parameter: Parameter): void {
     if (callback.name === "anonymous") {
       throw new Error("Unsupport anonymous callback function.");
     }
@@ -189,7 +183,7 @@ class JobBroker {
     }#${trigger.getHandlerFunction()}#${trigger.getUniqueId()}`;
   }
 
-  protected createJob(callback: JobFunction, parameter: JSONSerializable): Job {
+  protected createJob(callback: JobFunction, parameter: Parameter): Job {
     const trigger = ScriptApp.newTrigger(callback.name)
       .timeBased()
       .after(DELAY_DURATION)
@@ -300,4 +294,4 @@ class JobBroker {
   }
 }
 
-export { JobBroker, JobFunction, JobParameter, Job, JSONSerializable };
+export { JobBroker, JobFunction, JobParameter, Job, Parameter };
