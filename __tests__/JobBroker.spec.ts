@@ -50,7 +50,7 @@ LockService['getScriptLock'] = jest.fn(() => lock);
 describe('JobBroker', () => {
     describe('enqueue', () => {
         it('success', () => {
-            const jobBroker = new JobBroker();
+            const jobBroker = new JobBroker<Parameter>();
             interface HOGE {
                 foo: string;
             }
@@ -70,7 +70,7 @@ describe('JobBroker', () => {
     });
     describe('dequeue', () => {
         it('success', () => {
-            const jobBroker = new JobBroker();
+            const jobBroker = new JobBroker<Parameter>();
 
             jobBroker.enqueue(jest.fn(), {});
             jobBroker.dequeue('dummy');
@@ -78,11 +78,11 @@ describe('JobBroker', () => {
     });
     describe('consumeJob', () => {
         it('success', () => {
-            const jobBroker = new JobBroker();
             type paramType = { foo: string; };
+            const jobBroker = new JobBroker<paramType>();
             const param : paramType = { foo: "bar" };
             const callBack = (): void => {
-                const jobBroker = new JobBroker();
+                const jobBroker = new JobBroker<paramType>();
                 const callBack: JobFunction<paramType> = (parameter):void => {
                     console.log(param.foo);
                 };

@@ -18,7 +18,7 @@ declare namespace AppsScriptJobqueue {
         performLater(callback: JobFunction<any>, parameter: Parameter): void
     }
     export type Trigger = GoogleAppsScript.Script.Trigger;
-    export type Parameter = Record<string | number | symbol, object | string | number | boolean | null>|{}[]|object;
+    export type Parameter = Record<string | number | symbol, object | string | number | boolean | null>|object[]|object;
     export type JobFunction<T extends Parameter> = (parameter: T) => void;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 
