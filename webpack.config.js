@@ -13,10 +13,7 @@ module.exports = {
         path: path.join(__dirname, "dist"),
         filename: "index.js",
         library: "JobBroker",
-        libraryTarget: "this",
-        environment: {
-            arrowFunction: true
-        }
+        libraryTarget: "this"
     },
     resolve: {
         extensions: [".ts", ".js"],
