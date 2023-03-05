@@ -67,3 +67,10 @@ clean:
 undeploy: ## all undeploy Google apps scripts
 undeploy:
 	$(CLASP) undeploy --all
+
+
+.PHONY: prerelease_for_tagpr
+prerelease_for_tagpr: ## Pre release for tagpr
+prerelease_for_tagpr:
+	npm update
+	git add package-lock.json
