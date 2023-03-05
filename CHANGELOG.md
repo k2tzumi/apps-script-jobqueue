@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.0.7](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.6...v0.0.7) - 2023-03-05
+### Other Changes
+- Fix type def by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/16
+- Add JobFunction return value to link asynchronous execution status by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/18
+
 ## [v0.0.6](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.0.5...v0.0.6) - 2023-03-04
 ### Other Changes
 - Add object type to parameter by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/13
