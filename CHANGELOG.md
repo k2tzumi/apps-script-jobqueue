@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.2](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.1...v0.1.2) - 2023-03-05
+### Other Changes
+- Fix JobBroker.jobEventHandler is not a function by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/23
+
 ## [v0.1.1](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.0...v0.1.1) - 2023-03-05
 ### Other Changes
 - Export jobEventHandler by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/21
