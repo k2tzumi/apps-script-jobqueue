@@ -14,7 +14,7 @@ global.enqueueAsyncJob = (
   callback: JobFunction<object>,
   parameter: Parameter
 ): void => {
-  new JobBroker().enqueue(callback, parameter);
+  new JobBroker<object>().enqueue(callback, parameter);
 };
 
 /**
@@ -26,7 +26,7 @@ global.consumeAsyncJob = (
   closure: JobFunction<object>,
   handler: string
 ): void => {
-  new JobBroker().consumeJob(closure, handler);
+  new JobBroker<object>().consumeJob(closure, handler);
 };
 
 /**
@@ -34,8 +34,8 @@ global.consumeAsyncJob = (
  * @param {Date} scheduled_at Scheduled time
  * @return {DelayedJobBroker} - delayed job
  */
-global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
-  return DelayedJobBroker.createJob(scheduled_at);
+global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker<object> => {
+  return DelayedJobBroker.createJob<object>(scheduled_at);
 };
 
 /**
@@ -44,5 +44,5 @@ global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker => {
  * @param {string} handler Function name of the callback function
  */
 global.perform = (closure: JobFunction<object>, handler: string): void => {
-  DelayedJobBroker.perform(closure, handler);
+  DelayedJobBroker.perform<object>(closure, handler);
 };

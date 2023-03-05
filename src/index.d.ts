@@ -1,11 +1,11 @@
 /// <reference types="google-apps-script" />
 
 declare namespace AppsScriptJobqueue {
-    interface JobBroker<T extends Parameter> {
-        enqueueAsyncJob(callback: JobFunction<T>, parameter: Parameter): void;
-        consumeAsyncJob(closure: JobFunction<T>, handler: string): void;
-        createDelaydJob(scheduled_at: Date): DelayedJobBroker<T>;
-        perform(closure: JobFunction<T>, handler: string): void;
+    interface JobBroker {
+        enqueueAsyncJob<T extends Parameter>(callback: JobFunction<T>, parameter: Parameter): void;
+        consumeAsyncJob<T extends Parameter>(closure: JobFunction<T>, handler: string): void;
+        createDelaydJob<T extends Parameter>(scheduled_at: Date): DelayedJobBroker<T>;
+        perform<T extends Parameter>(closure: JobFunction<T>, handler: string): void;
     }
 
     interface _JobBroker<T extends Parameter> {
@@ -39,4 +39,4 @@ declare namespace AppsScriptJobqueue {
 }
 
 
-declare var JobBroker: AppsScriptJobqueue.JobBroker<AppsScriptJobqueue.Parameter>;
+declare var JobBroker: AppsScriptJobqueue.JobBroker;
