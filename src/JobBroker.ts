@@ -89,11 +89,12 @@ class JobBroker<T extends Parameter> {
         scriptLock.releaseLock();
 
         console.info(
-          `job starting. id: ${parameter.id}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
+          `job starting. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
         );
 
         try {
-          const result = this[parameter.handler](
+          const foo = window;
+          const result = foo.eval(parameter.handler)(
             JSON.parse(parameter.parameter)
           );
           if (!result) {
@@ -104,14 +105,14 @@ class JobBroker<T extends Parameter> {
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.info(
-            `job success. id: ${parameter.id}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `job success. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
         } catch (e) {
           parameter.state = "failed";
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.warn(
-            `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
 
           this.purgeTimeoutQueue();
