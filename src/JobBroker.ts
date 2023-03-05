@@ -93,7 +93,17 @@ class JobBroker<T extends Parameter> {
         );
 
         try {
-          const result = globalThis[parameter.handler](
+          console.info(
+            Object.entries(globalThis).map(([key, value]) => [
+              key,
+              typeof value,
+            ])
+          );
+          // const result = globalThis[parameter.handler](
+          //   JSON.parse(parameter.parameter)
+          // );
+
+          const result = eval(parameter.handler)(
             JSON.parse(parameter.parameter)
           );
           if (!result) {
