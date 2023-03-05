@@ -16,6 +16,9 @@
         "no-console": [
             false
         ],
+        "no-eval": [
+            false
+        ],
         "variable-name": {
             "options": [
                 "allow-snake-case"
