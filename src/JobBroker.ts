@@ -151,7 +151,7 @@ class JobBroker<T extends Parameter> {
     return null;
   }
 
-  public purgeTimeoutQueue() {
+  public purgeTimeoutQueue(): void {
     for (const trigger of this.triggers) {
       if (trigger.getTriggerSource() !== ScriptApp.TriggerSource.CLOCK) {
         continue;
