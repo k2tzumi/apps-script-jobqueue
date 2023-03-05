@@ -80,7 +80,14 @@ describe('DelayedJobBroker', () => {
         it('success', () => {
             const broker = DelayedJobBroker.createJob<Parameter>(new Date());
 
-            const callBack = (): void => {};
+            const callBack = (): boolean => { return true; };
+
+            DelayedJobBroker.perform(callBack, "callBack");
+        });
+        it('failed', () => {
+            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
+
+            const callBack = (): boolean => { return true; };
 
             DelayedJobBroker.perform(callBack, "callBack");
         });

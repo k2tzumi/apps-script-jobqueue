@@ -9,7 +9,7 @@ type Parameter =
   | object[]
   | object;
 
-type JobFunction<T> = (parameter: T) => void;
+type JobFunction<T> = (parameter: T) => boolean;
 
 interface JobParameter {
   id: string;
@@ -153,7 +153,10 @@ class JobBroker<T extends Parameter> {
         );
 
         try {
-          closure(JSON.parse(parameter.parameter));
+          const result = closure(JSON.parse(parameter.parameter));
+          if (!result) {
+            throw new Error("Job function failed.");
+          }
 
           parameter.state = "end";
           parameter.end_at = this.now;
@@ -168,13 +171,14 @@ class JobBroker<T extends Parameter> {
           console.warn(
             `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
-        }
 
-        return;
+          scriptLock.releaseLock();
+          throw e;
+        }
+      } else {
+        console.info(`Nothing active job. handler: ${handler}`);
       }
       scriptLock.releaseLock();
-
-      console.info(`Nothing active job. handler: ${handler}`);
     }
   }
 
@@ -247,9 +251,9 @@ class JobBroker<T extends Parameter> {
       case "starting":
         return JOB_EXECUTE_TIME_OUT;
       case "end":
+      case "failed":
         // expire
         return 0;
-      case "failed":
       default:
         // 6 hour
         return null;

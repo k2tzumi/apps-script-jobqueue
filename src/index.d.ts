@@ -19,7 +19,7 @@ declare namespace AppsScriptJobqueue {
     }
     export type Trigger = GoogleAppsScript.Script.Trigger;
     export type Parameter = Record<string | number | symbol, object | string | number | boolean | null>|object[]|object;
-    export type JobFunction<T> = (parameter: T) => void;
+    export type JobFunction<T> = (parameter: T) => boolean;
     export type Job = { parameter: JobParameter; trigger: Trigger };
 
     export var JobParameter: JobParameter;
