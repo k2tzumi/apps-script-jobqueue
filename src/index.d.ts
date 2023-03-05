@@ -7,9 +7,9 @@ declare namespace AppsScriptJobqueue {
         /**
          * Set the following function objects globally in your application that uses JobBroker
          * ex)
-         * const jobEventHandler = JobBroker.jobEventHandler;
+         * const jobEventHandler = JobBroker.consumeJob;
          */
-        jobEventHandler: (event: TimeBasedEvent) => void;
+        consumeJob: (event: TimeBasedEvent) => void;
     }
 
     interface _JobBroker<T extends Parameter> {

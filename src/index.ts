@@ -7,10 +7,11 @@ declare const global: {
 
 /**
  * handler to execute the job.
- * @param event Time-based event
+ * @param {TimeBasedEvent} event Time-based event
  */
 const jobEventHandler = (event: TimeBasedEvent): void => {
-  new JobBroker<object>(jobEventHandler).consumeJob(event);
+  const func = global.consumeJob as (event: TimeBasedEvent) => void;
+  func(event);
 };
 
 global.jobEventHandler = jobEventHandler;
@@ -34,4 +35,12 @@ global.enqueueAsyncJob = (
  */
 global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker<object> => {
   return DelayedJobBroker.createJob<object>(jobEventHandler, scheduled_at);
+};
+
+/**
+ * Consume job
+ * @param {TimeBasedEvent} event Time-based event
+ */
+global.consumeJob = (event: TimeBasedEvent): void => {
+  new JobBroker<object>(jobEventHandler).consumeJob(event);
 };
