@@ -13,6 +13,8 @@ const jobEventHandler = (event: TimeBasedEvent): void => {
   new JobBroker<object>(jobEventHandler).consumeJob(event);
 };
 
+global.jobEventHandler = jobEventHandler;
+
 /**
  * Register for asynchronous processing.
  * @param {JobFunction} callback call back funtion
