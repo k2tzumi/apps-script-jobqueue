@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.3](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.2...v0.1.3) - 2023-03-05
+### Other Changes
+- Expose consumeJob by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/25
+- Fix this is not function by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/27
+
 ## [v0.1.2](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.1...v0.1.2) - 2023-03-05
 ### Other Changes
 - Fix JobBroker.jobEventHandler is not a function by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/23
