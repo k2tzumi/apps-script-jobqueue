@@ -4,35 +4,30 @@ import {
   Job,
   JobParameter,
   Parameter,
+  TimeBasedEvent,
 } from "./JobBroker";
 
 class DelayedJobBroker<T extends Parameter> extends JobBroker<T> {
-  private constructor(private scheduled_at: Date) {
-    super();
+  private constructor(
+    eventHandler: (event: TimeBasedEvent) => void,
+    private scheduled_at: Date
+  ) {
+    super(eventHandler);
   }
 
   static createJob<T extends Parameter>(
+    eventHandler: (event: TimeBasedEvent) => void,
     scheduled_at: Date
   ): DelayedJobBroker<T> {
-    return new this(scheduled_at);
+    return new this(eventHandler, scheduled_at);
   }
 
   public performLater(callback: JobFunction<T>, parameter: Parameter): void {
     this.enqueue(callback, parameter);
   }
 
-  static perform<T extends Parameter>(
-    closure: JobFunction<T>,
-    handler?: string
-  ): void {
-    new this(new Date()).consumeJob(
-      closure,
-      handler ? handler : this.perform.caller.name
-    );
-  }
-
   protected createJob(callback: JobFunction<T>, parameter: Parameter): Job {
-    const trigger = ScriptApp.newTrigger(callback.name)
+    const trigger = ScriptApp.newTrigger(this.eventHandler.name)
       .timeBased()
       .at(this.scheduled_at)
       .create();

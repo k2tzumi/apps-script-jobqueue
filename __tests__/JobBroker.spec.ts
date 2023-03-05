@@ -1,4 +1,4 @@
-import { JobBroker, JobFunction, Parameter } from "../src/JobBroker";
+import { JobBroker, JobFunction, Parameter, TimeBasedEvent } from "../src/JobBroker";
 
 const scriptCache = {
     get: jest.fn(function () {
@@ -47,10 +47,14 @@ ScriptApp['deleteTrigger'] = jest.fn();
 ScriptApp['TriggerSource'] = jest.fn(() => triggerSource);
 LockService['getScriptLock'] = jest.fn(() => lock);
 
+const jobEventHandler = (event :TimeBasedEvent): void => {
+    console.log(JSON.stringify(event));
+}
+
 describe('JobBroker', () => {
     describe('enqueue', () => {
         it('success', () => {
-            const jobBroker = new JobBroker<Parameter>();
+            const jobBroker = new JobBroker<Parameter>(jobEventHandler);
             interface HOGE {
                 foo: string;
             }
@@ -68,35 +72,14 @@ describe('JobBroker', () => {
             jobBroker.enqueue(jest.fn(), hoge);
         });
     });
-    describe('dequeue', () => {
-        it('success', () => {
-            const jobBroker = new JobBroker<Parameter>();
-
-            jobBroker.enqueue(jest.fn(), {});
-            jobBroker.dequeue('dummy');
-        });
-    });
     describe('consumeJob', () => {
         it('success', () => {
-            type paramType = { foo: string; };
-            const jobBroker = new JobBroker<paramType>();
-            const param : paramType = { foo: "bar" };
-            const callBack: JobFunction<paramType> = (parameter): boolean => {
-                console.log(param.foo);
-                return true;
-            };
-            jobBroker.consumeJob(callBack, "callBack");
-    });
-        it('failed', () => {
-            type paramType = { foo: string; };
-            const jobBroker = new JobBroker<paramType>();
-            const param : paramType = { foo: "bar" };
-            const callBack: JobFunction<paramType> = (parameter): boolean => {
-                console.log(param.foo);
-                return false;
-            };
-            jobBroker.consumeJob(callBack, "callBack");
-    });
+            const jobBroker = new JobBroker<Parameter>(jobEventHandler);
+
+            jobBroker.enqueue(jest.fn(), {});
+            const event = {} as TimeBasedEvent;
+            jobBroker.consumeJob(event);
+        });
     });
 });
 
