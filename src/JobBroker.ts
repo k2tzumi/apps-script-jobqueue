@@ -3,6 +3,7 @@
 // type LockService = GoogleAppsScript.Lock.LockService;
 type Cache = GoogleAppsScript.Cache.Cache;
 type Trigger = GoogleAppsScript.Script.Trigger;
+type AuthMode = GoogleAppsScript.Script.AuthMode;
 
 type Parameter =
   | Record<string | number | symbol, object | string | number | boolean | null>
@@ -22,6 +23,23 @@ interface JobParameter {
   parameter: string;
 }
 
+/**
+ * @see https://developers.google.com/apps-script/guides/triggers/events#time-driven_events
+ */
+interface TimeBasedEvent {
+  authMode: AuthMode;
+  "day-of-month": number;
+  "day-of-week": number;
+  hour: number;
+  minute: number;
+  month: number;
+  second: number;
+  timezone: string;
+  triggerUid: string;
+  "week-of-year": number;
+  year: number;
+}
+
 type Job = { parameter: JobParameter; trigger: Trigger };
 
 const MAX_SLOT = 10;
@@ -30,7 +48,7 @@ const DELAY_DURATION = 150;
 const JOB_EXECUTE_TIME_OUT = 3600;
 /**
  * 15 min
- * see. https://developers.google.com/apps-script/reference/script/clock-trigger-builder#atdateyear,-month,-day
+ * @see https://developers.google.com/apps-script/reference/script/clock-trigger-builder#atdateyear,-month,-day
  */
 const JOB_STARTING_TIME_OUT = 900;
 
@@ -38,7 +56,7 @@ class JobBroker<T extends Parameter> {
   private queue: Cache;
   private triggers: Trigger[];
 
-  public constructor() {
+  public constructor(protected eventHandler: (event: TimeBasedEvent) => void) {
     this.queue = CacheService.getScriptCache();
     this.triggers = ScriptApp.getProjectTriggers();
   }
@@ -54,91 +72,13 @@ class JobBroker<T extends Parameter> {
     this.saveJob(this.createJob(callback, parameter));
   }
 
-  public dequeue(handler: string): Job | null {
-    let waitJob: Job | undefined;
+  public consumeJob(event: TimeBasedEvent): void {
+    console.info(`consumeJob called. event: ${JSON.stringify(event)}`);
 
-    for (const trigger of this.triggers) {
-      if (trigger.getTriggerSource() !== ScriptApp.TriggerSource.CLOCK) {
-        continue;
-      }
-
-      const parameter = this.getJobParameter(trigger);
-      if (parameter) {
-        if (!this.isExpire(parameter)) {
-          if (parameter.state === "waiting" && handler === parameter.handler) {
-            if (
-              !parameter.scheduled_at ||
-              (parameter.scheduled_at && parameter.scheduled_at <= this.now)
-            ) {
-              return {
-                parameter,
-                trigger,
-              } as Job;
-            } else {
-              // Compare scheduled_at
-              if (
-                typeof waitJob === "undefined" ||
-                (waitJob.parameter &&
-                  waitJob.parameter.scheduled_at &&
-                  parameter.scheduled_at &&
-                  waitJob.parameter.scheduled_at > parameter.scheduled_at)
-              ) {
-                waitJob = {
-                  parameter,
-                  trigger,
-                } as Job;
-              } else {
-                console.info(
-                  `job wait. id: ${
-                    parameter.id
-                  }, handler: ${trigger.getHandlerFunction()}, created_at: ${
-                    parameter.created_at
-                  }, parameter: ${parameter.parameter}, scheduled_at: ${
-                    parameter.scheduled_at
-                  }, now: ${this.now}`
-                );
-              }
-            }
-          }
-        } else {
-          const { state, start_at, id, created_at, end_at } = parameter;
-
-          if (state === "end" || state === "failed") {
-            console.info(
-              `job clear. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state}, created_at: ${created_at}, start_at: ${start_at}, end_at: ${end_at}`
-            );
-          } else {
-            console.info(
-              `job time out. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state}, parameter: ${
-                parameter.parameter
-              }, created_at: ${created_at}, start_at: ${start_at}`
-            );
-          }
-          ScriptApp.deleteTrigger(trigger);
-          this.deleteJob(trigger);
-        }
-      } else {
-        console.info(
-          `delete trigger. id: ${trigger.getUniqueId()}, handler: ${trigger.getHandlerFunction()}`
-        );
-        ScriptApp.deleteTrigger(trigger);
-      }
-    }
-
-    if (waitJob) {
-      return waitJob;
-    }
-
-    return null;
-  }
-
-  public consumeJob(closure: JobFunction<T>, handler?: string): void {
     const scriptLock = LockService.getScriptLock();
 
     if (scriptLock.tryLock(500)) {
-      handler = handler ? handler : this.consumeJob.caller.name;
-
-      const popJob = this.dequeue(handler);
+      const popJob = this.dequeue(event.triggerUid);
 
       if (popJob) {
         const { parameter } = popJob;
@@ -153,7 +93,9 @@ class JobBroker<T extends Parameter> {
         );
 
         try {
-          const result = closure(JSON.parse(parameter.parameter));
+          const result = this[parameter.handler](
+            JSON.parse(parameter.parameter)
+          );
           if (!result) {
             throw new Error("Job function failed.");
           }
@@ -172,24 +114,79 @@ class JobBroker<T extends Parameter> {
             `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
 
+          this.purgeTimeoutQueue();
           scriptLock.releaseLock();
           throw e;
         }
       } else {
-        console.info(`Nothing active job. handler: ${handler}`);
+        console.info(`Nothing active job. triggerUid: ${event.triggerUid}`);
       }
+
+      this.purgeTimeoutQueue();
       scriptLock.releaseLock();
     }
   }
 
-  private getCacheKey(trigger: Trigger): string {
-    return `${
-      this.constructor.name
-    }#${trigger.getHandlerFunction()}#${trigger.getUniqueId()}`;
+  protected dequeue(triggerUid: string): Job | null {
+    for (const trigger of this.triggers) {
+      if (trigger.getTriggerSource() !== ScriptApp.TriggerSource.CLOCK) {
+        continue;
+      }
+
+      if (trigger.getUniqueId() !== triggerUid) {
+        continue;
+      }
+
+      const parameter = this.getJobParameter(trigger);
+      if (parameter) {
+        return {
+          parameter,
+          trigger,
+        };
+      } else {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  public purgeTimeoutQueue() {
+    for (const trigger of this.triggers) {
+      if (trigger.getTriggerSource() !== ScriptApp.TriggerSource.CLOCK) {
+        continue;
+      }
+
+      const parameter = this.getJobParameter(trigger);
+      if (parameter) {
+        if (this.isExpire(parameter)) {
+          const { state, start_at, id, created_at, end_at } = parameter;
+
+          if (state === "end" || state === "failed") {
+            console.info(
+              `job clear. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state}, created_at: ${created_at}, start_at: ${start_at}, end_at: ${end_at}`
+            );
+          } else {
+            console.info(
+              `job time out. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state}, parameter: ${
+                parameter.parameter
+              }, created_at: ${created_at}, start_at: ${start_at}`
+            );
+          }
+          ScriptApp.deleteTrigger(trigger);
+          this.deleteJob(trigger);
+        }
+      } else {
+        console.info(
+          `Delete cached out trigger. id: ${trigger.getUniqueId()}, handler: ${trigger.getHandlerFunction()}`
+        );
+        ScriptApp.deleteTrigger(trigger);
+      }
+    }
   }
 
   protected createJob(callback: JobFunction<T>, parameter: Parameter): Job {
-    const trigger = ScriptApp.newTrigger(callback.name)
+    const trigger = ScriptApp.newTrigger(this.eventHandler.name)
       .timeBased()
       .after(DELAY_DURATION)
       .create();
@@ -202,13 +199,13 @@ class JobBroker<T extends Parameter> {
     };
 
     return {
-      trigger,
       parameter: jobParameter,
+      trigger,
     };
   }
 
   private getJobParameter(trigger: Trigger): JobParameter | null {
-    const job = this.queue.get(this.getCacheKey(trigger));
+    const job = this.queue.get(trigger.getUniqueId());
 
     if (job) {
       return JSON.parse(job);
@@ -222,15 +219,12 @@ class JobBroker<T extends Parameter> {
 
     if (expirationInSeconds) {
       this.queue.put(
-        this.getCacheKey(job.trigger),
+        job.trigger.getUniqueId(),
         JSON.stringify(job.parameter),
         expirationInSeconds
       );
     } else {
-      this.queue.put(
-        this.getCacheKey(job.trigger),
-        JSON.stringify(job.parameter)
-      );
+      this.queue.put(job.trigger.getUniqueId(), JSON.stringify(job.parameter));
     }
   }
 
@@ -283,15 +277,14 @@ class JobBroker<T extends Parameter> {
         }
         return true;
       case "end":
-        return true;
       case "failed":
       default:
-        return false;
+        return true;
     }
   }
 
   private deleteJob(trigger: Trigger): void {
-    this.queue.remove(this.getCacheKey(trigger));
+    this.queue.remove(trigger.getUniqueId());
   }
 
   protected get now(): number {
@@ -299,4 +292,4 @@ class JobBroker<T extends Parameter> {
   }
 }
 
-export { JobBroker, JobFunction, JobParameter, Job, Parameter };
+export { JobBroker, JobFunction, JobParameter, Job, Parameter, TimeBasedEvent };

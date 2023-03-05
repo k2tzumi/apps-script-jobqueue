@@ -1,5 +1,5 @@
 import { DelayedJobBroker } from "../src/DelayedJobBroker";
-import { Parameter } from "../src/JobBroker";
+import { Parameter, TimeBasedEvent } from "../src/JobBroker";
 
 const scriptCache = {
     get: jest.fn(function () {
@@ -49,15 +49,19 @@ ScriptApp['deleteTrigger'] = jest.fn();
 ScriptApp['TriggerSource'] = jest.fn(() => triggerSource);
 LockService['getScriptLock'] = jest.fn(() => lock);
 
+const jobEventHandler = (event :TimeBasedEvent): void => {
+    console.log(JSON.stringify(event));
+}
+
 describe('DelayedJobBroker', () => {
     describe('createJob', () => {
         it('success', () => {
-            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
+            const broker = DelayedJobBroker.createJob<Parameter>(jobEventHandler, new Date());
         });
     });
     describe('performLater', () => {
         it('success', () => {
-            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
+            const broker = DelayedJobBroker.createJob<Parameter>(jobEventHandler, new Date());
 
             interface HOGE {
                 foo: string;
@@ -74,22 +78,6 @@ describe('DelayedJobBroker', () => {
             broker.performLater(jest.fn(), { nest: { foo: 1 } });
             broker.performLater(jest.fn(), [{ nest: { foo: 1 } }]);
             broker.performLater(jest.fn(), hoge);
-        });
-    });
-    describe('perform', () => {
-        it('success', () => {
-            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
-
-            const callBack = (): boolean => { return true; };
-
-            DelayedJobBroker.perform(callBack, "callBack");
-        });
-        it('failed', () => {
-            const broker = DelayedJobBroker.createJob<Parameter>(new Date());
-
-            const callBack = (): boolean => { return true; };
-
-            DelayedJobBroker.perform(callBack, "callBack");
         });
     });
 });
