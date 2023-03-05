@@ -5,6 +5,10 @@ declare const global: {
   [x: string]: unknown;
 };
 
+/**
+ * handler to execute the job.
+ * @param event Time-based event
+ */
 const jobEventHandler = (event: TimeBasedEvent): void => {
   new JobBroker<object>(jobEventHandler).consumeJob(event);
 };
