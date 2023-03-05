@@ -81,16 +81,22 @@ describe('JobBroker', () => {
             type paramType = { foo: string; };
             const jobBroker = new JobBroker<paramType>();
             const param : paramType = { foo: "bar" };
-            const callBack = (): void => {
-                const jobBroker = new JobBroker<paramType>();
-                const callBack: JobFunction<paramType> = (parameter):void => {
-                    console.log(param.foo);
-                };
-                jobBroker.consumeJob(callBack, "callBack");
+            const callBack: JobFunction<paramType> = (parameter): boolean => {
+                console.log(param.foo);
+                return true;
             };
-
-            jobBroker.enqueue(callBack, param);
-        });
+            jobBroker.consumeJob(callBack, "callBack");
+    });
+        it('failed', () => {
+            type paramType = { foo: string; };
+            const jobBroker = new JobBroker<paramType>();
+            const param : paramType = { foo: "bar" };
+            const callBack: JobFunction<paramType> = (parameter): boolean => {
+                console.log(param.foo);
+                return false;
+            };
+            jobBroker.consumeJob(callBack, "callBack");
+    });
     });
 });
 
