@@ -9,11 +9,10 @@ declare const global: {
  * handler to execute the job.
  * @param {TimeBasedEvent} event Time-based event
  */
-const jobEventHandler = (event: TimeBasedEvent): void => {
-  const func = global.consumeJob as (event: TimeBasedEvent) => void;
-  func(event);
-};
-
+function jobEventHandler(event: TimeBasedEvent): void {
+  // In practice, this process is not called. It needs to be implemented on the application side
+  globalThis.consumeJob(event, this);
+}
 global.jobEventHandler = jobEventHandler;
 
 /**

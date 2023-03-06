@@ -89,36 +89,39 @@ class JobBroker<T extends Parameter> {
         scriptLock.releaseLock();
 
         console.info(
-          `job starting. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
+          `Asynchronous job ${parameter.id} started. handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
         );
 
         try {
-          console.info(
-            Object.entries(global).map(([key, value]) => [key, typeof value])
-          );
-
-          const callback = global[parameter.handler];
-          if (typeof callback !== "function") {
-            throw new TypeError(`Not function. handler ${parameter.handler}`);
+          const handler = global[parameter.handler];
+          if (handler === undefined || typeof handler !== "function") {
+            throw new TypeError(
+              `Unable to execute callback function. handler: ${
+                parameter.handler
+              }, globalThis: ${Object.entries(global).map(([key, value]) => [
+                key,
+                typeof value,
+              ])}`
+            );
           }
 
-          const result = callback(JSON.parse(parameter.parameter));
+          const result = handler(JSON.parse(parameter.parameter));
           if (!result) {
-            throw new Error("Job function failed.");
+            throw new Error("Abnormal job return value.");
           }
 
           parameter.state = "end";
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.info(
-            `job success. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `Asynchronous job ${parameter.id} completed. handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
         } catch (e) {
           parameter.state = "failed";
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.warn(
-            `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `Job execution has failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
 
           this.purgeTimeoutQueue();
