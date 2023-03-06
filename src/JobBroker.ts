@@ -94,7 +94,7 @@ class JobBroker<T extends Parameter> {
 
         try {
           const handler = global[parameter.handler];
-          if (handler instanceof undefined || typeof handler !== "function") {
+          if (handler === undefined || typeof handler !== "function") {
             throw new TypeError(
               `Unable to execute callback function. handler: ${
                 parameter.handler
