@@ -72,7 +72,7 @@ class JobBroker<T extends Parameter> {
     this.saveJob(this.createJob(callback, parameter));
   }
 
-  public consumeJob(event: TimeBasedEvent): void {
+  public consumeJob(event: TimeBasedEvent, global: typeof globalThis): void {
     console.info(`consumeJob called. event: ${JSON.stringify(event)}`);
 
     const scriptLock = LockService.getScriptLock();
@@ -94,18 +94,15 @@ class JobBroker<T extends Parameter> {
 
         try {
           console.info(
-            Object.entries(globalThis).map(([key, value]) => [
-              key,
-              typeof value,
-            ])
+            Object.entries(global).map(([key, value]) => [key, typeof value])
           );
-          // const result = globalThis[parameter.handler](
-          //   JSON.parse(parameter.parameter)
-          // );
 
-          const result = eval(parameter.handler)(
-            JSON.parse(parameter.parameter)
-          );
+          const callback = global[parameter.handler];
+          if (typeof callback !== "function") {
+            throw new TypeError(`Not function. handler ${parameter.handler}`);
+          }
+
+          const result = callback(JSON.parse(parameter.parameter));
           if (!result) {
             throw new Error("Job function failed.");
           }
@@ -161,7 +158,7 @@ class JobBroker<T extends Parameter> {
     return null;
   }
 
-  public purgeTimeoutQueue(): void {
+  private purgeTimeoutQueue(): void {
     for (const trigger of this.triggers) {
       if (trigger.getTriggerSource() !== ScriptApp.TriggerSource.CLOCK) {
         continue;

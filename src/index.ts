@@ -40,7 +40,11 @@ global.createDelaydJob = (scheduled_at: Date): DelayedJobBroker<object> => {
 /**
  * Consume job
  * @param {TimeBasedEvent} event Time-based event
+ * @param {GlobalThis} appGlobalThis globalThis
  */
-global.consumeJob = (event: TimeBasedEvent): void => {
-  new JobBroker<object>(jobEventHandler).consumeJob(event);
+global.consumeJob = (
+  event: TimeBasedEvent,
+  appGlobalThis: typeof globalThis
+): void => {
+  new JobBroker<object>(jobEventHandler).consumeJob(event, appGlobalThis);
 };
