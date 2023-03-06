@@ -93,19 +93,21 @@ class JobBroker<T extends Parameter> {
         );
 
         try {
-          console.info(
-            "global:" +
-              Object.entries(global).map(([key, value]) => [key, typeof value])
-          );
-
-          const callback = global[parameter.handler];
-          if (callback instanceof undefined || typeof callback !== "function") {
-            throw new TypeError(`Not function. handler ${parameter.handler}`);
+          const handler = global[parameter.handler];
+          if (handler instanceof undefined || typeof handler !== "function") {
+            throw new TypeError(
+              `Unable to execute callback function. handler: ${
+                parameter.handler
+              }, globalThis: ${Object.entries(global).map(([key, value]) => [
+                key,
+                typeof value,
+              ])}`
+            );
           }
 
-          const result = callback(JSON.parse(parameter.parameter));
+          const result = handler(JSON.parse(parameter.parameter));
           if (!result) {
-            throw new Error("Job function failed.");
+            throw new Error("Abnormal job return value.");
           }
 
           parameter.state = "end";
@@ -119,7 +121,7 @@ class JobBroker<T extends Parameter> {
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.warn(
-            `job failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `Job execution has failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
 
           this.purgeTimeoutQueue();
