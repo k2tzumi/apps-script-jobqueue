@@ -7,17 +7,20 @@ declare namespace AppsScriptJobqueue {
         /**
          * Set the following function objects globally in your application that uses JobBroker
          * ex)
-         * const jobEventHandler = JobBroker.consumeJob;
+         * const jobEventHandler = (event: TimeBasedEvent): void => {
+         *   JobBroker.consumeJob(event, this);
+         * };
          */
-        consumeJob: (event: TimeBasedEvent) => void;
+        consumeJob: (event: TimeBasedEvent, appGlobalThis: typeof globalThis) => void;
     }
 
     interface _JobBroker<T extends Parameter> {
         enqueue(callback: JobFunction<T>, parameter: Parameter): void;
         dequeue(handler: string): Job | null;
-        consumeJob(closure: JobFunction<T>, handler?: string): void;
+        consumeJob(event: TimeBasedEvent, global: typeof globalThis): void;
     }
     interface DelayedJobBroker<T extends Parameter> extends _JobBroker<T> {
+        createJob<T extends Parameter>(eventHandler: (event: TimeBasedEvent) => void, scheduled_at: Date): DelayedJobBroker<T>
         performLater(callback: JobFunction<T>, parameter: Parameter): void
     }
     export type Trigger = GoogleAppsScript.Script.Trigger;
