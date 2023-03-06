@@ -94,11 +94,12 @@ class JobBroker<T extends Parameter> {
 
         try {
           console.info(
-            Object.entries(global).map(([key, value]) => [key, typeof value])
+            "global:" +
+              Object.entries(global).map(([key, value]) => [key, typeof value])
           );
 
           const callback = global[parameter.handler];
-          if (typeof callback !== "function") {
+          if (callback instanceof undefined || typeof callback !== "function") {
             throw new TypeError(`Not function. handler ${parameter.handler}`);
           }
 
