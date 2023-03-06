@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.5](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.4...v0.1.5) - 2023-03-06
+### Other Changes
+- Dump globalThis by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/30
+- Append globalThis argument by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/32
+
 ## [v0.1.4](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.3...v0.1.4) - 2023-03-05
 ### Other Changes
 - Use globalThis by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/28
