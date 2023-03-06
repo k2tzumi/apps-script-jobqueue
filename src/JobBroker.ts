@@ -89,7 +89,7 @@ class JobBroker<T extends Parameter> {
         scriptLock.releaseLock();
 
         console.info(
-          `job starting. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
+          `Asynchronous job ${parameter.id} started. handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, parameter: ${parameter.parameter}`
         );
 
         try {
@@ -114,7 +114,7 @@ class JobBroker<T extends Parameter> {
           parameter.end_at = this.now;
           this.saveJob(popJob);
           console.info(
-            `job success. id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `Asynchronous job ${parameter.id} completed. handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
         } catch (e) {
           parameter.state = "failed";
