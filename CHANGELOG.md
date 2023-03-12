@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.6](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.5...v0.1.6) - 2023-03-12
+### Other Changes
+- Rewrite readme by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/35
+
 ## [v0.1.5](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.4...v0.1.5) - 2023-03-06
 ### Other Changes
 - Dump globalThis by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/30
