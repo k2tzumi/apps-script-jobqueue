@@ -17,36 +17,61 @@ In the "Find a Library" text box, enter the script ID `11cz2CGI2m3W1_JS7PwnxL2_6
 
 ## Usage
 
-Using the library to asynchronous processing has the following steps.
+The procedure for asynchronous processing using the library when writing google apps script in typescript is as follows.
 
-### 1. Register a job (enqueue)
+### 1. Setup
+
+If you use JobBroker type definitions, please do the following.
+
+```console
+$ npm install --save-dev github:k2tzumi/apps-script-jobqueue
+```
+
+JobBroker handles time-based trigger events internally. Time-based trigger events are a feature of Apps Script that allows you to run a function at a specified time or interval. JobBroker uses this feature to perform asynchronous processing by scheduling and executing jobs in the background. You don’t need to set up the trigger events manually, as JobBroker does it for you automatically.
+
+https://developers.google.com/apps-script/guides/triggers/installable#time-driven_triggers
+
+Put the above code in your google apps script where you want asynchronous processing.
+
+```ts
+import "apps-script-jobqueue";
+type Parameter = AppsScriptJobqueue.Parameter;
+type TimeBasedEvent = AppsScriptJobqueue.TimeBasedEvent;
+
+function jobEventHandler(event: TimeBasedEvent): void {
+  JobBroker.consumeJob(event, globalThis);
+}
+```
+
+JobBroker.consumeJob method receives the time-based trigger event and executes the job registered in the job queue.
+
+### 2. Register a job (enqueue)
 
 Register a function object for asynchronous processing, including its parameters.  
 Internally, a trigger for immediate execution will be generated.
 
 ```ts
-const asyncFunction = (): void = {
-    // Details will be described below.
+// Type definition of arguments passed to asynchronous processing
+interface JobParameter {
+  type: string;
+  message: string;
+}
+
+// Define the body of the asynchronous processing as a global function
+function asyncFunction(parameter: JobParameter): boolean = {
+  // Describe the contents of the asynchronous processing
+
+  // The following is an example of asynchronous console output
+  console.log(`Asynchronous output. message ${parameter.message}`);
+
+  // If the job execution status is success, specify true
+  return true;
 };
 
-const parameter = { foo: "bar" };
-JobBroker.enqueueAsyncJob(asyncFunction, parameter);
-```
+const parameter = { type: "async", message: "message" } as JobParameter;
 
-### 2. Run a job (consume job)
-
-Registered functions will be executed via triggers.  
-Specify the callback function that consumes the job and the name of the function that was triggered.   
-The specified callback function will be the body of the asynchronous process.  
-The callback function can receive the parameters specified at the time of job registration.  
-Internally, the trigger will be removed after the callback process is completed.
-
-```ts
-const asyncFunction = (): void => {
-  JobBroker.consumeAsyncJob((parameter: Record<string, any>) => {
-    console.info(JSON.stringify(parameter));
-  }, "asyncFunction");
-};
+// Register a job in the job queue. Parameters are specified in generic to be type safe.
+JobBroker.enqueueAsyncJob<JobParameter>(asyncFunction, parameter);
 ```
 
 ### Timed asynchronous processing
@@ -55,21 +80,27 @@ The usage steps are the same as for normal asynchronous processing.
 The difference is in specifying the time to delay execution and the function to call it.
 
 ```ts
-const delayFunction = (): void = {
-  JobBroker.perform((parameter: Record<string, any>) => {
-    console.info(JSON.stringify(parameter));
-  }, "delayFunction");
+function delayFunction(parameter: JobParameter): boolean = {
+  // Describe the process to be executed on a delayed basis
+
+  // The following is an example of asynchronous console output
+  console.log(`Delayed execution output. message ${parameter.message}`);
+
+  // If the job execution status is success, specify true
+  return true;
 };
 
-const parameter = { foo: "bar" };
+const parameter = { type: "delay", message: "message" } as JobParameter;
+
 const startTIme = new Date();
 // 3 minutes later
 startTime.setMinutes(startTIme.getMinutes() + 3);
 
-JobBroker.createDelaydJob(countDownTime).performLater(delayFunction, parameter);
+// Let the job register after specifying the time for delayed execution.
+JobBroker.createDelaydJob<JobParameter>(startTime).performLater(delayFunction, parameter);
 ```
 
 ## Document
 
 see.
-https://script.google.com/macros/library/d/11cz2CGI2m3W1_JS7PwnxL2_6hkvtj47ynFuxKDDAAUwh3jP04sYnigg8/GS:a098de2b998324d4
+https://script.google.com/macros/library/d/11cz2CGI2m3W1_JS7PwnxL2_6hkvtj47ynFuxKDDAAUwh3jP04sYnigg8/55
