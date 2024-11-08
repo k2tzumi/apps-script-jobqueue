@@ -107,7 +107,7 @@ class JobBroker<T extends Parameter> {
 
           const result = handler(JSON.parse(parameter.parameter));
           if (!result) {
-            throw new Error("Abnormal job return value.");
+            throw new Error(`Abnormal job return value. parameter: ${parameter.parameter}, result: (${typeof result}) "${result}"`);
           }
 
           parameter.state = "end";

@@ -18,6 +18,16 @@ dist/index.js:
 node_modules:
 	npm install
 
+.PHONY: install
+install: ## Install packages
+install: node_modules
+
+.PHONY: upgrade
+upgrade: ## Upgrades package.json
+upgrade:
+	npx -p npm-check-updates  -c "ncu -u"
+	npm update
+
 .PHONY: login
 login: ## Google login
 login:
