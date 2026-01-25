@@ -3,3 +3,4 @@ dist/*.js
 .clasp.json
 dist/index.js.map
 coverage/
+.DS_Store

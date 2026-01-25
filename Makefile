@@ -59,9 +59,14 @@ pull: .clasp.json
 	$(CLASP) pull
 
 .PHONY: lint
-lint: ## Run tslint
+lint: ## Run ESLint
 lint: node_modules
 	npm run lint
+
+.PHONY: format
+format: ## Run Prettier format
+format: node_modules
+	npm run format
 
 .PHONY: test
 test: ## Run jest
@@ -69,7 +74,7 @@ test: node_modules
 	npm test
 
 .PHONY: clean
-clean: ## clean webpack bundle
+clean: ## clean rollup bundle
 clean:
 	rm -f dist/index.js*
 
