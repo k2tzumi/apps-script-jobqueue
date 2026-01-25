@@ -72,7 +72,7 @@ class JobBroker<T extends Parameter> {
     this.saveJob(this.createJob(callback, parameter));
   }
 
-  public consumeJob(event: TimeBasedEvent, global: typeof globalThis): void {
+  public consumeJob(event: TimeBasedEvent, appGlobal: typeof globalThis): void {
     console.info(`consumeJob called. event: ${JSON.stringify(event)}`);
 
     const scriptLock = LockService.getScriptLock();
@@ -93,21 +93,21 @@ class JobBroker<T extends Parameter> {
         );
 
         try {
-          const handler = global[parameter.handler];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const handler = (appGlobal as any)[parameter.handler] as (arg: unknown) => boolean;
           if (handler === undefined || typeof handler !== "function") {
             throw new TypeError(
-              `Unable to execute callback function. handler: ${
-                parameter.handler
-              }, globalThis: ${Object.entries(global).map(([key, value]) => [
-                key,
-                typeof value,
-              ])}`
+              `Unable to execute callback function. handler: ${parameter.handler}, globalThis: ${Object.entries(
+                globalThis as Record<string, unknown>
+              ).map(([key, value]) => [key, typeof value])}`
             );
           }
 
           const result = handler(JSON.parse(parameter.parameter));
           if (!result) {
-            throw new Error(`Abnormal job return value. parameter: ${parameter.parameter}, result: (${typeof result}) "${result}"`);
+            throw new Error(
+              `Abnormal job return value. parameter: ${parameter.parameter}, result: (${typeof result}) "${result}"`
+            );
           }
 
           parameter.state = "end";
@@ -120,8 +120,9 @@ class JobBroker<T extends Parameter> {
           parameter.state = "failed";
           parameter.end_at = this.now;
           this.saveJob(popJob);
+          const error = e as Error;
           console.warn(
-            `Job execution has failed. message: ${e.message}, stack: ${e.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
+            `Job execution has failed. message: ${error.message}, stack: ${error.stack}, id: ${parameter.id}, handler: ${parameter.handler}, created_at: ${parameter.created_at}, start_at: ${parameter.start_at}, start_at: ${parameter.end_at}, parameter: ${parameter.parameter}`
           );
 
           this.purgeTimeoutQueue();
@@ -228,26 +229,17 @@ class JobBroker<T extends Parameter> {
     const expirationInSeconds = this.getCacheExpirationInSeconds(job.parameter);
 
     if (expirationInSeconds) {
-      this.queue.put(
-        job.trigger.getUniqueId(),
-        JSON.stringify(job.parameter),
-        expirationInSeconds
-      );
+      this.queue.put(job.trigger.getUniqueId(), JSON.stringify(job.parameter), expirationInSeconds);
     } else {
       this.queue.put(job.trigger.getUniqueId(), JSON.stringify(job.parameter));
     }
   }
 
-  private getCacheExpirationInSeconds(
-    jobParameter: JobParameter
-  ): number | null {
+  private getCacheExpirationInSeconds(jobParameter: JobParameter): number | null {
     switch (jobParameter.state) {
       case "waiting":
         if (jobParameter.scheduled_at) {
-          return (
-            JOB_STARTING_TIME_OUT +
-            Math.round((jobParameter.scheduled_at - this.now) / 1000)
-          );
+          return JOB_STARTING_TIME_OUT + Math.round((jobParameter.scheduled_at - this.now) / 1000);
         } else {
           // JOB_STARTING_TIME_OUT + DELAY_DURATION(round up milliseconds)
           return JOB_STARTING_TIME_OUT + 1;
@@ -268,22 +260,13 @@ class JobBroker<T extends Parameter> {
     switch (parameter.state) {
       case "waiting":
         if (parameter.scheduled_at) {
-          return (
-            Math.ceil((this.now - parameter.scheduled_at) / 1000) >=
-            JOB_STARTING_TIME_OUT
-          );
+          return Math.ceil((this.now - parameter.scheduled_at) / 1000) >= JOB_STARTING_TIME_OUT;
         } else {
-          return (
-            Math.ceil((this.now - parameter.created_at) / 1000) >=
-            JOB_STARTING_TIME_OUT
-          );
+          return Math.ceil((this.now - parameter.created_at) / 1000) >= JOB_STARTING_TIME_OUT;
         }
       case "starting":
         if (parameter.start_at) {
-          return (
-            Math.ceil((this.now - parameter.start_at) / 1000) >=
-            JOB_STARTING_TIME_OUT
-          );
+          return Math.ceil((this.now - parameter.start_at) / 1000) >= JOB_STARTING_TIME_OUT;
         }
         return true;
       case "end":

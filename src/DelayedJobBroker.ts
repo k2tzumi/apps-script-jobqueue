@@ -1,11 +1,4 @@
-import {
-  JobBroker,
-  JobFunction,
-  Job,
-  JobParameter,
-  Parameter,
-  TimeBasedEvent,
-} from "./JobBroker";
+import { JobBroker, JobFunction, Job, JobParameter, Parameter, TimeBasedEvent } from "./JobBroker";
 
 class DelayedJobBroker<T extends Parameter> extends JobBroker<T> {
   private constructor(
