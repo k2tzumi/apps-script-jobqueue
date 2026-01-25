@@ -6,10 +6,19 @@ import ts from 'typescript';
 export default {
   input: 'src/index.ts',
   output: {
-    file: 'dist/index.js',
-    format: 'iife',
-    name: 'AppsScriptJobqueue',
-    sourcemap: true
+      file: 'dist/index.js',
+      format: 'iife',
+      name: 'AppsScriptJobqueue',
+      sourcemap: true,
+      banner: `
+/**
+ * JobBroker Library for Google Apps Script
+ * @function jobEventHandler
+ * @function enqueueAsyncJob
+ * @function createDelaydJob
+ * @function consumeJob
+ */
+`
   },
   plugins: [
     resolve({
