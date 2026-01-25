@@ -9,8 +9,6 @@ help:
 .clasp.json:
 	make login
 	$(CLASP) create --title JobBroker --type standalone --rootDir ./dist
-	$(CLASP) setting fileExtension js
-	rm -f .clasp.json-e
 
 dist/index.js:
 	make build
@@ -51,7 +49,7 @@ deploy: .clasp.json
 .PHONY: open
 open: ## Open Google apps scripts
 open: .clasp.json
-	$(CLASP) open
+	$(CLASP) open-script
 
 .PHONY: pull
 pull: ## Pull Google apps scripts
