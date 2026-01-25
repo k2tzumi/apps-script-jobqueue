@@ -5,6 +5,18 @@
 
 JobBroker is a library for Google Apps Script that provides asynchronous processing functions using Triggers.
 
+
+> [!WARNING]
+> Migration to V8 Runtime
+> 
+> This library has been migrated to support the V8 runtime, as the Rhino runtime for Google Apps Script will reach End of Life (EOL) at the end of January 2026.
+> 
+> **From February 2026, to use this library (version 58 or later), your application must enable the V8 runtime.**
+> 
+> Rhino runtime will no longer be supported. For details on enabling or > migrating to the V8 runtime, please refer to the official Google guide below:
+> 
+> 👉 [V8 Runtime Migration Guide (Google Official)](https://developers.google.com/apps-script/guides/v8-runtime/migration?hl=en)
+
 ## Setup
 
 This library is published as Apps Script, so you can integrate it into your project.
