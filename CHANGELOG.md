@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.8](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.7...v0.1.8) - 2026-01-25
+### Other Changes
+- Migrate to V8 + Rollup; refresh toolchain and CI (Node 22/23/24) by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/41
+- chore(deps): bump actions/checkout from 4 to 6 by @dependabot[bot] in https://github.com/k2tzumi/apps-script-jobqueue/pull/42
+- chore(deps): bump k1LoW/octocov-action from 0 to 1 by @dependabot[bot] in https://github.com/k2tzumi/apps-script-jobqueue/pull/44
+- chore(deps): bump codecov/codecov-action from 4 to 5 by @dependabot[bot] in https://github.com/k2tzumi/apps-script-jobqueue/pull/46
+- chore(deps): bump actions/setup-node from 4 to 6 by @dependabot[bot] in https://github.com/k2tzumi/apps-script-jobqueue/pull/45
+
 ## [v0.1.7](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.6...v0.1.7) - 2024-11-08
 ### Other Changes
 - Detail error messages by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/38
