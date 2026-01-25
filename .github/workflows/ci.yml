@@ -1,34 +1,52 @@
 name: ci
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    
     runs-on: ubuntu-latest
     
+    strategy:
+      matrix:
+        node-version: [22.x, 23.x, 24.x]
+    
     steps:
-    - uses: actions/checkout@v3
-    - name: Cache node modules
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-node-modules
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
       with:
-        # npm cache files are stored in `~/.npm` on Linux/macOS
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
     - name: Install Dependencies
-      run: npm install
+      run: npm ci
+
+    - name: Lint
+      run: npm run lint:check
+
+    - name: Format Check
+      run: npm run format:check
 
     - name: Build
-      run: make build
+      run: npm run build
 
     - name: Test
-      run: npm test -- --coverage
+      run: npm run test:coverage
+    
+    - name: Upload coverage to Codecov
+      if: matrix.node-version == '24.x'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
     
     - uses: k1LoW/octocov-action@v0
+      if: matrix.node-version == '24.x'

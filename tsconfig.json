@@ -1,29 +1,27 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "ES2019",
         "lib": [
-            "es2015",
-            "es2016",
-            "es2017",
-            "es2018",
+            "ES2019"
         ],
-        "outDir": "./dist",
+        "module": "ESNext",
+        "moduleResolution": "node",
         "rootDir": "./src",
-        "module": "commonjs",
-        "allowJs": false,
+        "outDir": "./dist",
         "declaration": false,
-        "downlevelIteration": true,
-        "strict": false,
-        "noUnusedLocals": true,
+        "strict": true,
         "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "declarationMap": false,
+        "sourceMap": true,
+        "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
         "typeRoots": [
             "node_modules/@types"
-        ],
+        ]
     },
     "include": [
         "./src/**/*"
