@@ -1,6 +1,6 @@
 {
   "name": "apps-script-jobqueue",
-  "version": "v0.1.8",
+  "version": "v0.1.9",
   "description": "A simple job queue library for Google Apps Script.",
   "type": "module",
   "private": true,
