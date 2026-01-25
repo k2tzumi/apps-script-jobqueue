@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.9](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.8...v0.1.9) - 2026-01-25
+### Other Changes
+- Fix clasp version up by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/47
+- Add WARNING Note by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/49
+
 ## [v0.1.8](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.7...v0.1.8) - 2026-01-25
 ### Other Changes
 - Migrate to V8 + Rollup; refresh toolchain and CI (Node 22/23/24) by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/41
