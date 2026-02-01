@@ -3,22 +3,38 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import ts from 'typescript';
 
+const stubFunctions = `function jobEventHandler() {
+}
+/**
+ * Register for asynchronous processing.
+ * @param {JobFunction} callback call back funtion
+ * @param {Parameter} parameter Specify parameters to be passed to the callback function
+ */
+function enqueueAsyncJob(callback, parameter) {
+}
+/**
+ * Create a delayed job
+ * @param {Date} scheduled_at Scheduled time
+ * @return {DelayedJobBroker} - delayed job
+ */
+function createDelaydJob(scheduled_at) {
+}
+/**
+ * Consume job
+ * @param {TimeBasedEvent} event Time-based event
+ * @param {GlobalThis} appGlobalThis globalThis
+ */
+function consumeJob(event, appGlobalThis) {
+}`;
+
 export default {
   input: 'src/index.ts',
   output: {
       file: 'dist/index.js',
       format: 'iife',
-      name: 'AppsScriptJobqueue',
+      name: 'JobBroker',
       sourcemap: true,
-      banner: `
-/**
- * JobBroker Library for Google Apps Script
- * @function jobEventHandler
- * @function enqueueAsyncJob
- * @function createDelaydJob
- * @function consumeJob
- */
-`
+      banner: stubFunctions
   },
   plugins: [
     resolve({
