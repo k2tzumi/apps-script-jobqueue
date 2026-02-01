@@ -58,3 +58,6 @@ function jobEventHandler(event: TimeBasedEvent): void {
 ): void => {
   new JobBroker<object>(jobEventHandler).consumeJob(event, appGlobalThis);
 };
+
+// Export for library usage
+export { JobBroker, DelayedJobBroker };
