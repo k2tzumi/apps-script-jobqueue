@@ -11,7 +11,7 @@ JobBroker is a library for Google Apps Script that provides asynchronous process
 > 
 > This library has been migrated to support the V8 runtime, as the Rhino runtime for Google Apps Script will reach End of Life (EOL) at the end of January 2026.
 > 
-> **From February 2026, to use this library (version 58 or later), your application must enable the V8 runtime.**
+> **From February 2026, to use this library (version 60 or later), your application must enable the V8 runtime.**
 > 
 > Rhino runtime will no longer be supported. For details on enabling or > migrating to the V8 runtime, please refer to the official Google guide below:
 > 
@@ -115,4 +115,4 @@ JobBroker.createDelaydJob<JobParameter>(startTime).performLater(delayFunction, p
 ## Document
 
 see.
-https://script.google.com/macros/library/d/11cz2CGI2m3W1_JS7PwnxL2_6hkvtj47ynFuxKDDAAUwh3jP04sYnigg8/59
+https://script.google.com/macros/library/d/11cz2CGI2m3W1_JS7PwnxL2_6hkvtj47ynFuxKDDAAUwh3jP04sYnigg8/60
