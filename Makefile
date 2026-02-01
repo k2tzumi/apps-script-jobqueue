@@ -85,5 +85,5 @@ undeploy:
 .PHONY: prerelease_for_tagpr
 prerelease_for_tagpr: ## Pre release for tagpr
 prerelease_for_tagpr:
-	npm update
+	npm install --package-lock-only
 	git add package-lock.json
