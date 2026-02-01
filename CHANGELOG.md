@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.10](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.9...v0.1.10) - 2026-02-01
+### Other Changes
+- Refactor rollup output format to match webpack-style structure by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/50
+
 ## [v0.1.9](https://github.com/k2tzumi/apps-script-jobqueue/compare/v0.1.8...v0.1.9) - 2026-01-25
 ### Other Changes
 - Fix clasp version up by @k2tzumi in https://github.com/k2tzumi/apps-script-jobqueue/pull/47
